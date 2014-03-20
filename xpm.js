@@ -37,7 +37,11 @@ XPM.prototype.lines = 0;
 
 XPM.prototype.addColor = function (ch, color) {
 	"use strict";
-	this.colormap[ch] = color;
+	if (color === "None") {
+		this.colormap[ch] = "rgba(0, 0, 0, 0)";
+	} else {
+		this.colormap[ch] = color;
+	}
 }
 
 XPM.prototype.addLine = function (line) {
