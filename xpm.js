@@ -16,6 +16,56 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+function XPM(width, height, colors, nchar) {
+	"use strict";
+	this.width = parseInt(width, 10);
+	this.height = parseInt(height, 10);
+	this.colors = parseInt(colors, 10);
+	this.nchar = parseInt(nchar, 10);
+	this.canvas.width = width;
+	this.canvas.height = height;
+	this.lines = 0;
+}
+
+XPM.prototype.width = 0;
+XPM.prototype.height = 0;
+XPM.prototype.colors = 0;
+XPM.prototype.nchar = 0;
+XPM.prototype.colormap = [];
+XPM.prototype.canvas = document.createElement('canvas');
+XPM.prototype.lines = 0;
+
+XPM.prototype.addColor = function (ch, color) {
+	"use strict";
+	if (color === "None") {
+		this.colormap[ch] = "rgba(0, 0, 0, 0)";
+	} else if (color in this.X11NameToHex) {
+		this.colormap[ch] = this.X11NameToHex[color];
+	} else {
+		this.colormap[ch] = color;
+	}
+}
+
+XPM.prototype.addLine = function (line) {
+	"use strict";
+	var i, ctx;
+
+	ctx = this.canvas.getContext('2d');
+	for (i = 0; i < line.length; i = i + 1) {
+		ctx.fillStyle = this.colormap[line[i]];
+		ctx.fillRect(i, this.lines, this.nchar, 1);
+	}
+	this.lines = this.lines + 1;
+}
+
+XPM.prototype.create = function () {
+	"use strict";
+	if (this.lines - 1 !== this.height) {
+		console.warn("Bad height");
+	}
+	return this.canvas;
+}
+
 /* Generated with misc/rgb2js */
 XPM.prototype.X11NameToHex = {
 	'snow': 'rgba(255, 250, 250, 1)',
@@ -771,54 +821,4 @@ XPM.prototype.X11NameToHex = {
 	'light green': 'rgba(144, 238, 144, 1)',
 	'LightGreen': 'rgba(144, 238, 144, 1)'
 };
-
-function XPM(width, height, colors, nchar) {
-	"use strict";
-	this.width = parseInt(width, 10);
-	this.height = parseInt(height, 10);
-	this.colors = parseInt(colors, 10);
-	this.nchar = parseInt(nchar, 10);
-	this.canvas.width = width;
-	this.canvas.height = height;
-	this.lines = 0;
-}
-
-XPM.prototype.width = 0;
-XPM.prototype.height = 0;
-XPM.prototype.colors = 0;
-XPM.prototype.nchar = 0;
-XPM.prototype.colormap = [];
-XPM.prototype.canvas = document.createElement('canvas');
-XPM.prototype.lines = 0;
-
-XPM.prototype.addColor = function (ch, color) {
-	"use strict";
-	if (color === "None") {
-		this.colormap[ch] = "rgba(0, 0, 0, 0)";
-	} else if (color in this.X11NameToHex) {
-		this.colormap[ch] = this.X11NameToHex[color];
-	} else {
-		this.colormap[ch] = color;
-	}
-}
-
-XPM.prototype.addLine = function (line) {
-	"use strict";
-	var i, ctx;
-
-	ctx = this.canvas.getContext('2d');
-	for (i = 0; i < line.length; i = i + 1) {
-		ctx.fillStyle = this.colormap[line[i]];
-		ctx.fillRect(i, this.lines, this.nchar, 1);
-	}
-	this.lines = this.lines + 1;
-}
-
-XPM.prototype.create = function () {
-	"use strict";
-	if (this.lines - 1 !== this.height) {
-		console.warn("Bad height");
-	}
-	return this.canvas;
-}
 
