@@ -54,7 +54,7 @@ XPM.prototype.addLine = function (line) {
 	var i, ctx;
 
 	ctx = this.canvas.getContext('2d');
-	for (i = 0; i < line.length; i = i + 1) {
+	for (i = 1; i < line.length; i = i + 1) {
 		var sc = line.substring((i - 1) * this.nchar, i * this.nchar);
 		ctx.fillStyle = this.colormap[sc];
 		ctx.fillRect(i, this.lines, 1, 1);
