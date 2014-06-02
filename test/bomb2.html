@@ -10,7 +10,8 @@
 <script src="../xpm.js"></script>
 <script src="../xpmnr_x11.js"></script>
 <script>
-var x = new XPM(32, 32, 9, 1);
+var x = new XPM();
+x.raw(32, 32, 9, 1);
 x.addColor(' ', 'None');
 x.addColor('o', 'OldLace');
 x.addColor('O', 'black');
@@ -52,7 +53,7 @@ x.addLine('   +@@OOOOOOO@@+                ');
 x.addLine('    ++@@@@@@@++                 ');
 x.addLine('      +++++++                   ');
 x.addLine('                                ');
-document.getElementById('xpm').appendChild(x.create())
+document.getElementById('xpm').appendChild(x.draw())
 </script>
 </body>
 </html>

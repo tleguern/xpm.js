@@ -16,36 +16,41 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-function XPM(width, height, colors, nchar) {
+function XPM() {
 	"use strict";
-	this.width = parseInt(width, 10);
-	this.height = parseInt(height, 10);
-	this.colors = parseInt(colors, 10);
-	this.nchar = parseInt(nchar, 10);
-	this.canvas.width = width;
-	this.canvas.height = height;
-	this.lines = 0;
+	this.canvas.width = 0;
+	this.canvas.height = 0;
 }
 
 XPM.prototype.width = 0;
 XPM.prototype.height = 0;
 XPM.prototype.colors = 0;
-XPM.prototype.nchar = 0;
+XPM.prototype.chars = 0;
 XPM.prototype.colormap = [];
 XPM.prototype.canvas = document.createElement('canvas');
 XPM.prototype.lines = 0;
 
-XPM.prototype.addColor = function (ch, color) {
+XPM.prototype.raw = function (width, height, colors, chars) {
+	this.width = parseInt(width, 10);
+	this.height = parseInt(height, 10);
+	this.colors = parseInt(colors, 10);
+	this.chars = parseInt(chars, 10);
+	this.canvas.width = this.width;
+	this.canvas.height = this.height;
+
+}
+
+XPM.prototype.addColor = function (char, color) {
 	"use strict";
 	var default_color = "rgba(0, 0, 0, 0)";
 
 	if (color === "None") {
-		this.colormap[ch] = default_color;
+		this.colormap[char] = default_color;
 	} else if (typeof(XPM.prototype.nameResolver) != "undefined") {
 		var ret = this.nameResolver(color);
-		this.colormap[ch] = ret == null ? default_color : ret;
+		this.colormap[char] = ret == null ? default_color : ret;
 	} else {
-		this.colormap[ch] = color;
+		this.colormap[char] = color;
 	}
 }
 
@@ -55,14 +60,14 @@ XPM.prototype.addLine = function (line) {
 
 	ctx = this.canvas.getContext('2d');
 	for (i = 1; i < line.length; i = i + 1) {
-		var sc = line.substring((i - 1) * this.nchar, i * this.nchar);
+		var sc = line.substring((i - 1) * this.chars, i * this.chars);
 		ctx.fillStyle = this.colormap[sc];
 		ctx.fillRect(i, this.lines, 1, 1);
 	}
 	this.lines = this.lines + 1;
 }
 
-XPM.prototype.create = function () {
+XPM.prototype.draw = function () {
 	"use strict";
 	if (this.lines !== this.height) {
 		console.warn("Badly constructed XPM file -- wrong height");
