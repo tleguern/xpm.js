@@ -64,8 +64,11 @@ XPM.prototype.addLine = function (line) {
 
 XPM.prototype.create = function () {
 	"use strict";
-	if (this.lines - 1 !== this.height) {
-		console.warn("Bad height");
+	if (this.lines !== this.height) {
+		console.warn("Badly constructed XPM file -- wrong height");
+	}
+	if (this.colors !== Object.keys(this.colormap).length) {
+		console.warn("Badly constructed XPM file -- wrong number of colors");
 	}
 	return this.canvas;
 }
