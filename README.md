@@ -1,9 +1,46 @@
 XPM.JS
 ======
 
-The `xpm.js` library process XPM files and render them in a `<canvas>`.
+The `xpm.js` library render XPM files in a `<canvas>` element.
 
-More to follow.
+XPM.addColor
+------------
+
+Bind the specified color to a string.
+
+Exemple:
+
+    x.addColor('#', '#FFFFFF');
+
+XPM.addLine
+-----------
+
+Add a line to the drawing. This interface is very crude.
+
+Exemple:
+
+    x.addLine("#   #   #");
+    x.addLine(" #  #  # ");
+    x.addLine("  # # #  ");
+    x.addLine("   ###   ");
+    x.addLine("    #    ");
+
+XPM.create
+----------
+
+Return the canvas element.
+
+XPM.nameResolver
+----------------
+
+An optional interface, not implemented directly by `xpm.js`, allows the
+resolution of a color name to a sensible value in rgb or hex.
+
+This method is expected to accept a string on input and return a string
+if it finds a matching value, or null.
+
+Such an implementation can be found in `xpmnr_x11.js`, which convert X11
+color names to their rgba values.
 
 Documentation
 -------------
