@@ -24,6 +24,8 @@ XPM.prototype.width = 0;
 XPM.prototype.height = 0;
 XPM.prototype.colors = 0;
 XPM.prototype.chars = 0;
+XPM.prototype.xhotspot = 0;
+XPM.prototype.yhotspot = 0;
 XPM.prototype.colormap = [];
 XPM.prototype.canvas = document.createElement('canvas');
 XPM.prototype.lines = 0;
@@ -96,6 +98,7 @@ XPM.prototype.load = function (buffer) {
 		pos = pos + 1;
 		lastPos = pos;
 
+		/* TODO: Multi-line comments */
 		if (section > 0 && line.substr(0, 2) === "/*"
 		    && line.substr(line.length - 2, line.length) === "*/") {
 			continue;
@@ -120,7 +123,6 @@ XPM.prototype.load = function (buffer) {
 			break;
 		}
 		case 2:	/* <Values> */ {
-			/* TODO: Hotspot and XPMEXT */
 			var a;
 
 			line = line.substr(line.indexOf('"') + 1,
@@ -128,12 +130,36 @@ XPM.prototype.load = function (buffer) {
 			line = line.replace(/\s+/g, ' ').trim();
 
 			a = line.split(' ');
-			this.width = parseInt(a[0], 10);
-			this.height = parseInt(a[1], 10);
-			this.colors = parseInt(a[2], 10);
-			this.chars = parseInt(a[3], 10);
+			if (a[0]) {
+				this.width = parseInt(a[0], 10);
+			} else {
+				throw "Invalid <Values> line: width";
+			}
+			if (a[1]) {
+				this.height = parseInt(a[1], 10);
+			} else {
+				throw "Invalid <Values> line: height";
+			}
+			if (a[2]) {
+				this.colors = parseInt(a[2], 10);
+			} else {
+				throw "Invalid <Values> line: ncolors";
+			}
+			if (a[3]) {
+				this.chars = parseInt(a[3], 10);
+			} else {
+				throw "Invalid <Values> line: cpp";
+			}
+
 			this.canvas.width = this.width;
 			this.canvas.height = this.height;
+
+			if (a[4] && a[5]) {
+				this.xhotspot =  parseInt(a[4], 10);
+				this.yhotspot =  parseInt(a[5], 10);
+			} else if (a[4] && a[4] === "XPMEXT") {
+				throw "XPMEXT is not implemented";
+			}
 			
 			section = 3;
 			break;
