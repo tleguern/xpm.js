@@ -40,18 +40,19 @@ XPM.prototype.raw = function (width, height, colors, chars) {
 
 }
 
-XPM.prototype.addColor = function (chars, color, key) {
+XPM.prototype.addColor = function (chars, color) {
 	"use strict";
 	var default_color = "rgba(0, 0, 0, 0)";
-	key = key || "c";
 
-	if (color === "None" || color === "none") {
-		this.colormap[chars] = default_color;
-	} else if (typeof(XPM.prototype.nameResolver) != "undefined") {
-		var ret = this.nameResolver(color);
-		this.colormap[chars] = ret == null ? default_color : ret;
-	} else {
-		this.colormap[chars] = color;
+	if (color['c']) {
+		if (color['c'] === "None" || color['c'] === "none") {
+			this.colormap[chars] = default_color;
+		} else if (typeof(XPM.prototype.nameResolver) != "undefined") {
+			var ret = this.nameResolver(color['c']);
+			this.colormap[chars] = ret == null ? default_color : ret;
+		} else {
+			this.colormap[chars] = color['c'];
+		}
 	}
 }
 
@@ -171,6 +172,7 @@ XPM.prototype.load = function (buffer) {
 			 *       - Parse color value;
 			 */
 			var key, val, chars, cit;
+			var map = [];
 
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
@@ -183,12 +185,21 @@ XPM.prototype.load = function (buffer) {
 			for (key in cit) {
 				val = cit.next();
 				if (key[1] == 'c') {
-					this.addColor(chars, val[1]);
+					map['c'] = val[1];
+				} else if (key[1] == 'm') {
+					map['m'] = val[1];
+				} else if (key[1] == 's') {
+					map['s'] = val[1];
+				} else if (key[1] == 'g') {
+					map['g'] = val[1];
+				} else if (key[1] == 'g4') {
+					map['g4'] = val[1];
 				} else {
 					console.warn("Not implemented: "
 					    + key[1]);
 				}
 			}
+			this.addColor(chars, map);
 
 			colors = colors + 1;
 			if (this.colors === colors) {
