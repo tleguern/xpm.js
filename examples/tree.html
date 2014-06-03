@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tree</title>
+</head>
+<body>
+<h1>tree.xpm</h1>
+<div id="tree"></div>
+
+<script src="../xpm.js"></script>
+<script>
+function getXPM(path, callback) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.addEventListener("load", transferComplete, false);
+	xmlhttp.addEventListener("error", transferFailed, false);
+
+	function transferComplete(evt) {
+		callback(this.responseText);
+	}
+
+	function transferFailed(evt) {
+		console.warn('Failed to retrieve xpm image');
+	}
+
+	xmlhttp.open("GET", path, true);
+	xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
+	xmlhttp.send();
+}
+</script>
+<script>
+var tree= new XPM();
+getXPM('tree.xpm', function (t) {
+	tree.load(t);
+	document.getElementById('tree').appendChild(tree.draw())
+});
+</script>
+</body>
+</html>

@@ -18,8 +18,6 @@
 
 function XPM() {
 	"use strict";
-	this.canvas.width = 0;
-	this.canvas.height = 0;
 }
 
 XPM.prototype.width = 0;
@@ -40,17 +38,17 @@ XPM.prototype.raw = function (width, height, colors, chars) {
 
 }
 
-XPM.prototype.addColor = function (char, color) {
+XPM.prototype.addColor = function (chars, color) {
 	"use strict";
 	var default_color = "rgba(0, 0, 0, 0)";
 
 	if (color === "None") {
-		this.colormap[char] = default_color;
+		this.colormap[chars] = default_color;
 	} else if (typeof(XPM.prototype.nameResolver) != "undefined") {
 		var ret = this.nameResolver(color);
-		this.colormap[char] = ret == null ? default_color : ret;
+		this.colormap[chars] = ret == null ? default_color : ret;
 	} else {
-		this.colormap[char] = color;
+		this.colormap[chars] = color;
 	}
 }
 
@@ -60,8 +58,9 @@ XPM.prototype.addLine = function (line) {
 
 	ctx = this.canvas.getContext('2d');
 	for (i = 1; i < line.length; i = i + 1) {
-		var sc = line.substring((i - 1) * this.chars, i * this.chars);
-		ctx.fillStyle = this.colormap[sc];
+		var ss = line.substring((i - 1) * this.chars, i * this.chars);
+		var color = this.colormap[ss];
+		ctx.fillStyle = color;
 		ctx.fillRect(i, this.lines, 1, 1);
 	}
 	this.lines = this.lines + 1;
@@ -76,5 +75,123 @@ XPM.prototype.draw = function () {
 		console.warn("Badly constructed XPM file -- wrong number of colors");
 	}
 	return this.canvas;
+}
+
+XPM.prototype.load = function (buffer) {
+	"use strict";
+	var lastPos, section, offset, line, pos;
+	var colors, lines;
+
+	lastPos = section = offset = 0;
+	colors = lines = 0;
+	do {
+		pos = buffer.indexOf('\n', lastPos);
+		if (buffer[pos - 1] === '\r') {
+			offset = 1;
+		}
+		if (pos === 0) {
+			pos = buffer.length;
+		}
+		line = buffer.substr(lastPos, pos - lastPos);
+		pos = pos + 1;
+		lastPos = pos;
+
+		if (section > 0 && line.substr(0, 2) === "/*"
+		    && line.substr(line.length - 2, line.length) === "*/") {
+			continue;
+		}
+
+		switch(section) {
+		case 0: {
+			if (line !== "/* XPM */") {
+				throw "Not a valid XPM file - section 1";
+			} else {
+				section = 1;
+			}
+			break;
+		}
+		case 1: {
+			/* TODO: Check for a correct C struct */
+			if (line[line.length - 1] !== '{') {
+				throw "Not a valid XPM file - section 2";
+			} else {
+				section = 2;
+			}
+			break;
+		}
+		case 2:	/* <Values> */ {
+			/* TODO: Hotspot and XPMEXT */
+			var a;
+
+			line = line.substr(line.indexOf('"') + 1,
+			    line.lastIndexOf('"') - 1);
+			line = line.replace(/\s+/g, ' ').trim();
+
+			a = line.split(' ');
+			this.width = parseInt(a[0], 10);
+			this.height = parseInt(a[1], 10);
+			this.colors = parseInt(a[2], 10);
+			this.chars = parseInt(a[3], 10);
+			this.canvas.width = this.width;
+			this.canvas.height = this.height;
+			
+			section = 3;
+			break;
+		}
+		case 3:	/* <Colors> */ {
+			/*
+			 * TODO: - Handle 'm', 'g' and 'g4' keys;
+			 *       - Parse color value;
+			 */
+			var key, val, chars, cit;
+
+			line = line.substr(line.indexOf('"') + 1,
+			    line.lastIndexOf('"') - 1);
+
+			chars = line.substr(0, this.chars);
+			line = line.substr(this.chars);
+			line = line.replace(/\s+/g, ' ').trim();
+
+			cit = Iterator(line.split(' '));
+			for (key in cit) {
+				val = cit.next();
+				if (key[1] == 'c') {
+					this.addColor(chars, val[1]);
+				} else {
+					console.warn("Not implemented: "
+					    + key[1]);
+				}
+			}
+
+			colors = colors + 1;
+			if (this.colors === colors) {
+				section = 4;
+			}
+			break;
+		}
+		case 4:	/* <Pixels> */ {
+			/* TODO: error and cleanup checks */
+			line = line.substr(line.indexOf('"') + 1,
+			    line.lastIndexOf('"') - 1);
+
+			this.addLine(line);
+
+			lines = lines + 1;
+			if (this.height === lines) {
+				section = 5;
+			}
+			break;
+		}
+		case 5: /* <Extensions> */ {
+			/* TODO */
+			section = -1;
+			break;
+		}
+		case -1:
+			return;
+		default:
+			throw "Not a valid XPM file";
+		}
+	} while (pos !== buffer.length);
 }
 

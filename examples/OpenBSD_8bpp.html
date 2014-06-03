@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OpenBSD</title>
+</head>
+<body>
+<h1>openbsd.xpm</h1>
+<div id="openbsd"></div>
+
+<script src="../xpm.js"></script>
+<script>
+function getXPM(path, callback) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.addEventListener("load", transferComplete, false);
+	xmlhttp.addEventListener("error", transferFailed, false);
+
+	function transferComplete(evt) {
+		callback(this.responseText);
+	}
+
+	function transferFailed(evt) {
+		console.warn('Failed to retrieve xpm image');
+	}
+
+	xmlhttp.open("GET", path, true);
+	xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
+	xmlhttp.send();
+}
+</script>
+<script>
+var openbsd = new XPM();
+getXPM('OpenBSD_8bpp.xpm', function (t) {
+	openbsd.load(t);
+	document.getElementById('openbsd').appendChild(openbsd.draw())
+});
+</script>
+</body>
+</html>
