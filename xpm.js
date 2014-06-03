@@ -40,11 +40,12 @@ XPM.prototype.raw = function (width, height, colors, chars) {
 
 }
 
-XPM.prototype.addColor = function (chars, color) {
+XPM.prototype.addColor = function (chars, color, key) {
 	"use strict";
 	var default_color = "rgba(0, 0, 0, 0)";
+	key = key || "c";
 
-	if (color === "None") {
+	if (color === "None" || color === "none") {
 		this.colormap[chars] = default_color;
 	} else if (typeof(XPM.prototype.nameResolver) != "undefined") {
 		var ret = this.nameResolver(color);
