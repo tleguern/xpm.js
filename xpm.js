@@ -25,8 +25,8 @@ function XPM() {
 
 XPM.prototype.width = 0;
 XPM.prototype.height = 0;
-XPM.prototype.colors = 0;
-XPM.prototype.chars = 0;
+XPM.prototype.ncolors = 0;
+XPM.prototype.cpp = 0;
 XPM.prototype.xhotspot = 0;
 XPM.prototype.yhotspot = 0;
 XPM.prototype.colormap = [];
