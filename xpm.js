@@ -114,7 +114,7 @@ XPM.prototype.draw = function (colorscheme) {
 	"use strict";
 	var ss, color, colormap, y, x, ctx;
 
-	if (typeof(colorscheme) === undefined) {
+	if (typeof(colorscheme) === "undefined") {
 		if (Object.keys(this.colormap).length !== 0) {
 			colormap = this.colormap;
 		} else if (Object.keys(this.monomap).length !== 0) {
