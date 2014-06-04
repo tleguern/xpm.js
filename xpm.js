@@ -39,6 +39,7 @@ XPM.prototype.ncolors = 0;
 XPM.prototype.cpp = 0;
 XPM.prototype.xhotspot = 0;
 XPM.prototype.yhotspot = 0;
+XPM.prototype.name = "";
 XPM.prototype.colormap = [];
 XPM.prototype.monomap = [];
 XPM.prototype.greymap = [];
@@ -134,6 +135,7 @@ XPM.prototype.draw = function (colorscheme) {
 			ctx.fillRect(x, y, 1, 1);
 		}
 	}
+	this.canvas.name = this.name;
 	return this.canvas;
 };
 
@@ -168,10 +170,19 @@ XPM.prototype.load = function (buffer) {
 			section = 1;
 			break;
 		case 1:
-			/* TODO: Check for a correct C struct */
-			if (line[line.length - 1] !== '{') {
+			if (line.lastIndexOf('{') === -1
+			    || line.lastIndexOf('*') === -1
+			    || line.lastIndexOf('[') === -1
+			    || line.lastIndexOf(']') === -1) {
 				throw new EINVAL("Missing C struct");
 			}
+			if (line.substr(0, line.indexOf('*')).trim()
+			    !== "static char") {
+				throw new EINVAL("Wrong C struct");
+			}
+			this.name = line.substr(line.indexOf('*') + 1,
+			    line.indexOf('[') - line.indexOf('*') - 1).trim();
+
 			section = 2;
 			break;
 		case 2:	/* <Values> */
