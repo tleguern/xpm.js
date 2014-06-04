@@ -84,8 +84,8 @@ XPM.prototype.addColor = function (chars, color) {
 		this.monomap[chars] = color.m;
 	}
 	if (color.g4) {
-		var bite = parseInt(color.g4.substr(1), 16);
-		if (color.g4.charAt(0) !== '#' || bite % 17 !== 0) {
+		if (color.g4.charAt(0) !== '#'
+		    || parseInt(color.g4.substr(1), 16) % 17 !== 0) {
 			throw new EINVAL("Invalid 4-bit grayscale color");
 		}
 		this.greymap4bits[chars] = color.g4;
