@@ -77,9 +77,7 @@ XPM.prototype.addLine = function (line) {
 
 XPM.prototype.draw = function () {
 	"use strict";
-	var ctx;
 
-	ctx = this.canvas.getContext('2d');
 	return this.canvas;
 };
 
