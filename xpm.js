@@ -63,23 +63,25 @@ XPM.prototype.addColor = function (chars, color) {
 
 XPM.prototype.addLine = function (line) {
 	"use strict";
-	var ss, color, i, ctx;
 
-	ctx = this.canvas.getContext('2d');
-	for (i = 1; i < line.length; i = i + 1) {
-		ss = line.substring((i - 1) * this.cpp,
-		    i * this.cpp);
-		color = this.colormap[ss];
-		ctx.fillStyle = color;
-		ctx.fillRect(i, this.nlines, 1, 1);
-	}
 	this.nlines = this.nlines + 1;
 	this.lines.push(line);
 };
 
 XPM.prototype.draw = function () {
 	"use strict";
+	var ss, color, y, x, ctx;
 
+	ctx = this.canvas.getContext('2d');
+	for (y = 0; y < this.lines.length; y = y + 1) {
+		for (x = 1; x < this.lines[y].length; x = x + 1) {
+			ss = this.lines[y].substring((x - 1) * this.cpp,
+			    x * this.cpp);
+			color = this.colormap[ss];
+			ctx.fillStyle = color;
+			ctx.fillRect(x, y, 1, 1);
+		}
+	}
 	return this.canvas;
 };
 
