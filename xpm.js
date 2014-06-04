@@ -44,7 +44,6 @@ XPM.prototype.monomap = [];
 XPM.prototype.greymap = [];
 XPM.prototype.greymap4bits = [];
 XPM.prototype.canvas = document.createElement('canvas');
-XPM.prototype.nlines = 0;
 XPM.prototype.lines = [];
 
 XPM.prototype.raw = function (width, height, ncolors, cpp) {
@@ -101,7 +100,12 @@ XPM.prototype.addColor = function (chars, color) {
 XPM.prototype.addLine = function (line) {
 	"use strict";
 
-	this.nlines = this.nlines + 1;
+	if (line.length / this.cpp > this.width) {
+		throw EINVAL("Line too long");
+	} else if (line.length / this.cpp < this.width) {
+		throw EINVAL("Line too short");
+	}
+
 	this.lines.push(line);
 };
 
@@ -252,12 +256,6 @@ XPM.prototype.load = function (buffer) {
 		case 4:	/* <Pixels> */
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
-
-			if (line.length / this.cpp > this.width) {
-				throw EINVAL("Line too long");
-			} else if (line.length / this.cpp < this.width) {
-				throw EINVAL("Line too short");
-			}
 
 			this.addLine(line);
 
