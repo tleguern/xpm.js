@@ -33,13 +33,13 @@ XPM.prototype.colormap = [];
 XPM.prototype.canvas = document.createElement('canvas');
 XPM.prototype.lines = 0;
 
-XPM.prototype.raw = function (width, height, colors, chars) {
+XPM.prototype.raw = function (width, height, ncolors, cpp) {
 	"use strict";
 
 	this.width = parseInt(width, 10);
 	this.height = parseInt(height, 10);
-	this.colors = parseInt(colors, 10);
-	this.chars = parseInt(chars, 10);
+	this.ncolors = parseInt(ncolors, 10);
+	this.cpp = parseInt(cpp, 10);
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
 };
@@ -66,8 +66,8 @@ XPM.prototype.addLine = function (line) {
 
 	ctx = this.canvas.getContext('2d');
 	for (i = 1; i < line.length; i = i + 1) {
-		ss = line.substring((i - 1) * this.chars,
-		    i * this.chars);
+		ss = line.substring((i - 1) * this.cpp,
+		    i * this.cpp);
 		color = this.colormap[ss];
 		ctx.fillStyle = color;
 		ctx.fillRect(i, this.lines, 1, 1);
@@ -83,11 +83,9 @@ XPM.prototype.draw = function () {
 
 XPM.prototype.load = function (buffer) {
 	"use strict";
-	var lastPos, section, offset, line, pos;
-	var colors, lines;
+	var lastPos, section, offset, line, pos, ncolors, lines;
 
-	lastPos = section = offset = 0;
-	colors = lines = 0;
+	lastPos = section = offset = ncolors = lines = 0;
 	do {
 		pos = buffer.indexOf('\n', lastPos);
 		if (buffer[pos - 1] === '\r') {
@@ -139,12 +137,12 @@ XPM.prototype.load = function (buffer) {
 				throw "Invalid <Values> line: height";
 			}
 			if (a[2]) {
-				this.colors = parseInt(a[2], 10);
+				this.ncolors = parseInt(a[2], 10);
 			} else {
 				throw "Invalid <Values> line: ncolors";
 			}
 			if (a[3]) {
-				this.chars = parseInt(a[3], 10);
+				this.cpp = parseInt(a[3], 10);
 			} else {
 				throw "Invalid <Values> line: cpp";
 			}
@@ -172,8 +170,8 @@ XPM.prototype.load = function (buffer) {
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
 
-			chars = line.substr(0, this.chars);
-			line = line.substr(this.chars);
+			chars = line.substr(0, this.cpp);
+			line = line.substr(this.cpp);
 			line = line.replace(/\s+/g, ' ').trim();
 
 			cit = Iterator(line.split(' '));
@@ -196,8 +194,8 @@ XPM.prototype.load = function (buffer) {
 			}
 			this.addColor(chars, map);
 
-			colors = colors + 1;
-			if (this.colors === colors) {
+			ncolors = ncolors + 1;
+			if (this.ncolors === ncolors) {
 				section = 4;
 			}
 			break;
