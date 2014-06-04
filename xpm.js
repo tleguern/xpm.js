@@ -31,7 +31,8 @@ XPM.prototype.xhotspot = 0;
 XPM.prototype.yhotspot = 0;
 XPM.prototype.colormap = [];
 XPM.prototype.canvas = document.createElement('canvas');
-XPM.prototype.lines = 0;
+XPM.prototype.nlines = 0;
+XPM.prototype.lines = [];
 
 XPM.prototype.raw = function (width, height, ncolors, cpp) {
 	"use strict";
@@ -70,9 +71,10 @@ XPM.prototype.addLine = function (line) {
 		    i * this.cpp);
 		color = this.colormap[ss];
 		ctx.fillStyle = color;
-		ctx.fillRect(i, this.lines, 1, 1);
+		ctx.fillRect(i, this.nlines, 1, 1);
 	}
-	this.lines = this.lines + 1;
+	this.nlines = this.nlines + 1;
+	this.lines.push(line);
 };
 
 XPM.prototype.draw = function () {
