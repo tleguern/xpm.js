@@ -154,7 +154,7 @@ XPM.prototype.load = function (buffer) {
 				this.xhotspot =  parseInt(a[4], 10);
 				this.yhotspot =  parseInt(a[5], 10);
 			} else if (a[4] && a[4] === "XPMEXT") {
-				throw "XPMEXT is not implemented";
+				throw "Not implemented";
 			}
 			
 			section = 3;
@@ -188,8 +188,7 @@ XPM.prototype.load = function (buffer) {
 				} else if (key[1] === 'g4') {
 					map.g4 = val[1];
 				} else {
-					console.warn("Not implemented: "
-					    + key[1]);
+					throw "Not implemented";
 				}
 			}
 			this.addColor(chars, map);
@@ -200,9 +199,12 @@ XPM.prototype.load = function (buffer) {
 			}
 			break;
 		case 4:	/* <Pixels> */
-			/* TODO: error and cleanup checks */
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
+
+			if (line.length / this.cpp !== this.width) {
+				throw "Not a valid XPM file - invalid line";
+			}
 
 			this.addLine(line);
 
