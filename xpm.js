@@ -19,6 +19,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+function ENOSUPPORT(message) {
+	this.name = "Functionality not implemented";
+	this.message = message;
+}
+
+function EINVAL(message) {
+	this.name = "Not a valid XPM file";
+	this.message = message;
+}
+
 function XPM() {
 	"use strict";
 }
@@ -62,23 +72,20 @@ XPM.prototype.addColor = function (chars, color) {
 	if (color.m) {
 		if (color.m.toLowerCase() !== "black"
 		    && color.m.toLowerCase() !== "white") {
-			throw "Not a valid XPM file - "
-			    + "Invalid monochrome color";
+			throw new EINVAL("Invalid 1-bit monochrome color");
 		}
 		this.monomap[chars] = color.m;
 	}
 	if (color.g4) {
 		var bite = parseInt(color.g4.substr(1), 16);
 		if (color.g4.charAt(0) !== '#' || bite % 17 !== 0) {
-			throw "Not a valid XPM file - "
-			    + "Invalid 4-bit grayscale color";
+			throw new EINVAL("Invalid 4-bit grayscale color");
 		}
 		this.greymap4bits[chars] = color.g4;
 	}
 	if (color.g) {
 		if (color.g.charAt(0) !== '#') {
-			throw "Not a valid XPM file - "
-			    + "Invalid 8-bit grayscale color";
+			throw new EINVAL("Invalid 8-bit grayscale color");
 		}
 		this.greymap[chars] = color.g;
 	}
@@ -145,14 +152,14 @@ XPM.prototype.load = function (buffer) {
 		switch (section) {
 		case 0:
 			if (line !== "/* XPM */") {
-				throw "Not a valid XPM file - section 1";
+				throw new EINVAL("Missing XPM comment");
 			}
 			section = 1;
 			break;
 		case 1:
 			/* TODO: Check for a correct C struct */
 			if (line[line.length - 1] !== '{') {
-				throw "Not a valid XPM file - section 2";
+				throw new EINVAL("Missing C struct");
 			}
 			section = 2;
 			break;
@@ -167,22 +174,22 @@ XPM.prototype.load = function (buffer) {
 			if (a[0]) {
 				this.width = parseInt(a[0], 10);
 			} else {
-				throw "Invalid <Values> line: width";
+				throw new EINVAL("Invalid width");
 			}
 			if (a[1]) {
 				this.height = parseInt(a[1], 10);
 			} else {
-				throw "Invalid <Values> line: height";
+				throw new EINVAL("Invalid height");
 			}
 			if (a[2]) {
 				this.ncolors = parseInt(a[2], 10);
 			} else {
-				throw "Invalid <Values> line: ncolors";
+				throw new EINVAL("Invalid ncolors");
 			}
 			if (a[3]) {
 				this.cpp = parseInt(a[3], 10);
 			} else {
-				throw "Invalid <Values> line: cpp";
+				throw new EINVAL("Invalid cpp");
 			}
 
 			this.canvas.width = this.width;
@@ -192,7 +199,7 @@ XPM.prototype.load = function (buffer) {
 				this.xhotspot =  parseInt(a[4], 10);
 				this.yhotspot =  parseInt(a[5], 10);
 			} else if (a[4] && a[4] === "XPMEXT") {
-				throw "Not implemented";
+				throw ENOSUPPORT("XPMEXT");
 			}
 			
 			section = 3;
@@ -225,7 +232,7 @@ XPM.prototype.load = function (buffer) {
 				} else if (key[1] === 'g4') {
 					map.g4 = val[1];
 				} else {
-					throw "Not implemented";
+					throw EINVAL("Color key " + val[1]);
 				}
 			}
 			this.addColor(chars, map);
@@ -239,8 +246,10 @@ XPM.prototype.load = function (buffer) {
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
 
-			if (line.length / this.cpp !== this.width) {
-				throw "Not a valid XPM file - invalid line";
+			if (line.length / this.cpp > this.width) {
+				throw EINVAL("Line too long");
+			} else if (line.length / this.cpp < this.width) {
+				throw EINVAL("Line too short");
 			}
 
 			this.addLine(line);
@@ -257,7 +266,7 @@ XPM.prototype.load = function (buffer) {
 		case -1:
 			return;
 		default:
-			throw "Not a valid XPM file";
+			throw EINVAL("Extra garbage at end of file");
 		}
 	} while (pos !== buffer.length);
 };
