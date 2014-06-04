@@ -179,8 +179,7 @@ XPM.prototype.load = function (buffer) {
 			break;
 		case 3:	/* <Colors> */
 			/*
-			 * TODO: - Handle 'm', 'g' and 'g4' keys;
-			 *       - Parse color value;
+			 * TODO: - Parse color value;
 			 */
 			var key, val, chars, cit;
 			var map = [];
