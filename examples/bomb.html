@@ -6,7 +6,15 @@
 </head>
 <body>
 <h1>bomb.xpm</h1>
-<img id="bomb" src="bomb.xpm" alt="A picture of a bomb"/>
+<h2>1 bits monochrome</h2>
+<img id="bombm" src="bomb.xpm" alt="A picture of a bomb in black and white"/>
+<h2>4 bits grey</h2>
+<img id="bombg4" src="bomb.xpm" alt="A picture of a bomb in 16 greys"/>
+<h2>8 bits grey</h2>
+<img id="bombg" src="bomb.xpm" alt="A picture of a bomb in full 256 colors"/>
+<h2>8 bits color</h2>
+<img id="bombc" src="bomb.xpm"
+    alt="A picture of a bomb in full 256 shade of grey"/>
 
 <script src="../xpm.js"></script>
 <script>
@@ -31,9 +39,17 @@ function getXPM(path, callback) {
 <script>
 var bomb = new XPM();
 getXPM('bomb.xpm', function (t) {
+	var c, m, g, g4;
+
 	bomb.load(t);
-	var c = bomb.draw();
-	document.getElementById('bomb').setAttribute('src', c.toDataURL());
+	c = bomb.draw('c');
+	document.getElementById('bombc').setAttribute('src', c.toDataURL());
+	m = bomb.draw('m');
+	document.getElementById('bombm').setAttribute('src', m.toDataURL());
+	g = bomb.draw('g');
+	document.getElementById('bombg').setAttribute('src', g.toDataURL());
+	g4 = bomb.draw('g4');
+	document.getElementById('bombg4').setAttribute('src', g4.toDataURL());
 });
 </script>
 </body>
