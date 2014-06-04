@@ -30,6 +30,7 @@ XPM.prototype.cpp = 0;
 XPM.prototype.xhotspot = 0;
 XPM.prototype.yhotspot = 0;
 XPM.prototype.colormap = [];
+XPM.prototype.monomap = [];
 XPM.prototype.canvas = document.createElement('canvas');
 XPM.prototype.nlines = 0;
 XPM.prototype.lines = [];
@@ -50,7 +51,7 @@ XPM.prototype.addColor = function (chars, color) {
 	var c, default_color = "rgba(0, 0, 0, 0)";
 
 	if (color.c) {
-		if (color.c === "None" || color.c === "none") {
+		if (color.c.toLowerCase() === "none") {
 			this.colormap[chars] = default_color;
 		} else if (typeof(XPM.prototype.nameResolver) !== "undefined") {
 			c = this.nameResolver(color.c);
@@ -58,6 +59,12 @@ XPM.prototype.addColor = function (chars, color) {
 		} else {
 			this.colormap[chars] = color.c;
 		}
+	} else if (color.m) {
+		if (color.m.toLowerCase !== "black"
+		    && color.m.toLowerCase !== "white") {
+			throw "Not a valid XPM file - Invalid monochrome color";
+		}
+		this.monomap[chars] = color.m;
 	}
 };
 
@@ -68,16 +75,23 @@ XPM.prototype.addLine = function (line) {
 	this.lines.push(line);
 };
 
-XPM.prototype.draw = function () {
+XPM.prototype.draw = function (colorscheme) {
 	"use strict";
-	var ss, color, y, x, ctx;
+	var ss, color, colormap, y, x, ctx;
+	colorscheme = colorscheme || "c";
+
+	if (colorscheme.toLowerCase() == "m") {
+		colormap = this.monomap;
+	} else {
+		colormap = this.colormap;
+	}
 
 	ctx = this.canvas.getContext('2d');
 	for (y = 0; y < this.lines.length; y = y + 1) {
 		for (x = 1; x < this.lines[y].length; x = x + 1) {
 			ss = this.lines[y].substring((x - 1) * this.cpp,
 			    x * this.cpp);
-			color = this.colormap[ss];
+			color = colormap[ss];
 			ctx.fillStyle = color;
 			ctx.fillRect(x, y, 1, 1);
 		}
