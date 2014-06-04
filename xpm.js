@@ -64,7 +64,7 @@ XPM.prototype.raw = function (width, height, ncolors, cpp) {
 
 XPM.prototype.addColor = function (chars, color) {
 	"use strict";
-	var default_color = "rgba(0, 0, 0, 0)";
+	var c, default_color = "rgba(0, 0, 0, 0)";
 
 	if (color.c) {
 		if (color.c.toLowerCase() === "none") {
