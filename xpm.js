@@ -113,16 +113,31 @@ XPM.prototype.addLine = function (line) {
 XPM.prototype.draw = function (colorscheme) {
 	"use strict";
 	var ss, color, colormap, y, x, ctx;
-	colorscheme = colorscheme || "c";
 
-	if (colorscheme.toLowerCase() == "m") {
-		colormap = this.monomap;
-	} else if (colorscheme.toLowerCase() == "g") {
-		colormap = this.greymap;
-	} else if (colorscheme.toLowerCase() == "g4") {
-		colormap = this.greymap4bits;
+	if (typeof(colorscheme) === undefined) {
+		if (Object.keys(this.colormap).length !== 0) {
+			colormap = this.colormap;
+		} else if (Object.keys(this.monomap).length !== 0) {
+			colormap = this.monomap;
+		} else if (Object.keys(this.greymap).length !== 0) {
+			colormap = this.greymap;
+		} else if (Object.keys(this.greymap4bits).length !== 0) {
+			colormap = this.greymap4bits;
+		} else {
+			throw new EINVAL("No colorscheme available");
+		}
 	} else {
-		colormap = this.colormap;
+		if (colorscheme.toLowerCase() == "m") {
+			colormap = this.monomap;
+		} else if (colorscheme.toLowerCase() == "g") {
+			colormap = this.greymap;
+		} else if (colorscheme.toLowerCase() == "g4") {
+			colormap = this.greymap4bits;
+		} else if (colorscheme.toLowerCase() == "c") {
+			colormap = this.colormap;
+		} else {
+			throw new EINVAL("Invalid colorscheme");
+		}
 	}
 
 	ctx = this.canvas.getContext('2d');
