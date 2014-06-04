@@ -50,6 +50,10 @@ XPM.prototype.lines = [];
 XPM.prototype.raw = function (width, height, ncolors, cpp) {
 	"use strict";
 
+	if (width <= 0 || height <= 0 || ncolors <= 0 || cpp <= 0) {
+		throw new EINVAL("Ridiculous parameters");
+	}
+
 	this.width = parseInt(width, 10);
 	this.height = parseInt(height, 10);
 	this.ncolors = parseInt(ncolors, 10);
