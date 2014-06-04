@@ -31,6 +31,8 @@ XPM.prototype.xhotspot = 0;
 XPM.prototype.yhotspot = 0;
 XPM.prototype.colormap = [];
 XPM.prototype.monomap = [];
+XPM.prototype.greymap = [];
+XPM.prototype.greymap4bits = [];
 XPM.prototype.canvas = document.createElement('canvas');
 XPM.prototype.nlines = 0;
 XPM.prototype.lines = [];
@@ -48,7 +50,7 @@ XPM.prototype.raw = function (width, height, ncolors, cpp) {
 
 XPM.prototype.addColor = function (chars, color) {
 	"use strict";
-	var c, default_color = "rgba(0, 0, 0, 0)";
+	var default_color = "rgba(0, 0, 0, 0)";
 
 	if (color.c) {
 		if (color.c.toLowerCase() === "none") {
@@ -56,12 +58,29 @@ XPM.prototype.addColor = function (chars, color) {
 		} else {
 			this.colormap[chars] = color.c;
 		}
-	} else if (color.m) {
-		if (color.m.toLowerCase !== "black"
-		    && color.m.toLowerCase !== "white") {
-			throw "Not a valid XPM file - Invalid monochrome color";
+	}
+	if (color.m) {
+		if (color.m.toLowerCase() !== "black"
+		    && color.m.toLowerCase() !== "white") {
+			throw "Not a valid XPM file - "
+			    + "Invalid monochrome color";
 		}
 		this.monomap[chars] = color.m;
+	}
+	if (color.g4) {
+		var bite = parseInt(color.g4.substr(1), 16);
+		if (color.g4.charAt(0) !== '#' || bite % 17 !== 0) {
+			throw "Not a valid XPM file - "
+			    + "Invalid 4-bit grayscale color";
+		}
+		this.greymap4bits[chars] = color.g4;
+	}
+	if (color.g) {
+		if (color.g.charAt(0) !== '#') {
+			throw "Not a valid XPM file - "
+			    + "Invalid 8-bit grayscale color";
+		}
+		this.greymap[chars] = color.g;
 	}
 };
 
@@ -79,6 +98,10 @@ XPM.prototype.draw = function (colorscheme) {
 
 	if (colorscheme.toLowerCase() == "m") {
 		colormap = this.monomap;
+	} else if (colorscheme.toLowerCase() == "g") {
+		colormap = this.greymap;
+	} else if (colorscheme.toLowerCase() == "g4") {
+		colormap = this.greymap4bits;
 	} else {
 		colormap = this.colormap;
 	}
