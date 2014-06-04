@@ -53,9 +53,6 @@ XPM.prototype.addColor = function (chars, color) {
 	if (color.c) {
 		if (color.c.toLowerCase() === "none") {
 			this.colormap[chars] = default_color;
-		} else if (typeof(XPM.prototype.nameResolver) !== "undefined") {
-			c = this.nameResolver(color.c);
-			this.colormap[chars] = c === null ? default_color : c;
 		} else {
 			this.colormap[chars] = color.c;
 		}
