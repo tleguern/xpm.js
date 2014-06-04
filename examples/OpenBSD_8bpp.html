@@ -6,7 +6,8 @@
 </head>
 <body>
 <h1>openbsd.xpm</h1>
-<div id="openbsd"></div>
+<img id="openbsd" src="OpenBSD_8bpp.xpm"
+    alt="A picture of Puffy, the mascot of the OpenBSD project."/>
 
 <script src="../xpm.js"></script>
 <script>
@@ -32,7 +33,9 @@ function getXPM(path, callback) {
 var openbsd = new XPM();
 getXPM('OpenBSD_8bpp.xpm', function (t) {
 	openbsd.load(t);
-	document.getElementById('openbsd').appendChild(openbsd.draw())
+	var c = openbsd.draw();
+	document.getElementById('openbsd').setAttribute('src', c.toDataURL());
+
 });
 </script>
 </body>

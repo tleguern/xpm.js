@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>bomb.xpm</h1>
-<div id="bomb"></div>
+<img id="bomb" src="bomb.xpm" alt="A picture of a bomb"/>
 
 <script src="../xpm.js"></script>
 <script>
@@ -32,7 +32,8 @@ function getXPM(path, callback) {
 var bomb = new XPM();
 getXPM('bomb.xpm', function (t) {
 	bomb.load(t);
-	document.getElementById('bomb').appendChild(bomb.draw())
+	var c = bomb.draw();
+	document.getElementById('bomb').setAttribute('src', c.toDataURL());
 });
 </script>
 </body>

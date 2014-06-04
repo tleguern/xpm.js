@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>tree.xpm</h1>
-<div id="tree"></div>
+<img id="tree" src="tree.xpm" alt="A picture of a tree"/>
 
 <script src="../xpm.js"></script>
 <script>
@@ -32,7 +32,8 @@ function getXPM(path, callback) {
 var tree= new XPM();
 getXPM('tree.xpm', function (t) {
 	tree.load(t);
-	document.getElementById('tree').appendChild(tree.draw())
+	var c = tree.draw();
+	document.getElementById('tree').setAttribute('src', c.toDataURL());
 });
 </script>
 </body>
