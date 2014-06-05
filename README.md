@@ -67,19 +67,17 @@ Such keys are:
 For the moment missing colors from a colorscheme are not computed are
 infered.
 
-XPM.nameResolver
+XPMNameResolver
 ----------------
 
-An optional interface, not implemented directly by `xpm.js`, which
-allows the resolution of a color name to a sensible value in rgb or hex.
+This object will be called whenever a color name is used in the 'c'
+colorscheme.  A dummy defaut one is provided, but it will only return a
+random color.
 
-This method is expected to accept a string on input and return a string
-if it finds a matching value, or null.
+Two implementations are included in separate files:
 
-Such an implementation can be found in `xpmnr_x11.js`, which converts
-X11 color names to their rgba values.
-
-This mechanism is only available for the 'c' colorscheme.
+   * xpmnr_x11.js: Provide X11 color name to rgba;
+   * xpmnr_picons.js: Provide Picons color name to hex;
 
 Documentation
 -------------

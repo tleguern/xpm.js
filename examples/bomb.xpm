@@ -5,7 +5,7 @@ static char * icl8_11432_xpm[] = {
 /* colors */
 "  s None c None    m white g4 #FFFFFF g #FFFFFF",
 "o        c #999999 m white g4 #999999 g #999999",
-"O        c black   m black g4 #000000 g #000000",
+"O        c #000000 m black g4 #000000 g #000000",
 "+        c #333333 m black g4 #333333 g #333333",
 "@        c #111111 m black g4 #111111 g #111111",
 "#        c #FF6666 m black g4 #888888 g #888888",

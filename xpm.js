@@ -31,6 +31,12 @@ function EINVAL(message) {
 	this.message = message;
 }
 
+function XPMNameResolver(name) {
+	"use strict";
+	/* Dummy resolver */
+	return '#' + Math.floor(Math.random() * 16777215).toString(16);
+}
+
 function XPM(width, height, ncolors, cpp) {
 	"use strict";
 	this.width = width || 0;
@@ -55,8 +61,8 @@ XPM.prototype.addColor = function (chars, color) {
 	if (color.c) {
 		if (color.c.toLowerCase() === "none") {
 			this.colormap[chars] = default_color;
-		} else if (typeof(XPM.prototype.nameResolver) !== "undefined") {
-			c = this.nameResolver(color.c);
+		} else if (color.c[0] !== '#') {
+			c = XPMNameResolver(color.c);
 			this.colormap[chars] = c === null ? default_color : c;
 		} else {
 			this.colormap[chars] = color.c;

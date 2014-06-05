@@ -16,7 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-XPM.prototype.nameResolver = function (name) {
+function XPMNameResolver(name) {
 	"use strict";
 	if (name in PiconsToHex) {
 		return PiconsToHex[name];
