@@ -3,19 +3,21 @@ XPM.JS
 
 The `xpm.js` library render XPM files in a `<canvas>` element.
 
-XPM.load
---------
+XPM
+---
 
-Construct a XPM object from a given buffer.
-
-XPM.raw
--------
-
-Initialize a XPM object by hand.
+Constructor for the XPM object. It accepts up to 4 opitional parameters:
+width, height, number of colors and chars per pixel.
 
 Exemple:
 
     var x = new XPM(32, 32, 2, 1);
+    var y = new XPM();
+
+XPM.load
+--------
+
+Construct a XPM object from a given buffer.
 
 XPM.addColor
 ------------
