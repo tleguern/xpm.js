@@ -43,10 +43,10 @@ function XPMColor(char) {
 
 	var color = {
 		's': 'None',
-		'c': 'rgba(0, 0, 0, 0)',
-		'm': 'white',
-		'g': '#FFFFFF',
-		'g4': '#FFFFFF'
+		'c': '',
+		'm': '',
+		'g': '',
+		'g4': ''
 	};
 
 	this.s = function(s) {
@@ -61,7 +61,11 @@ function XPMColor(char) {
 	this.c = function(c) {
 		"use strict";
 		if (typeof c === "undefined") {
-			return color.c;
+			if (color.c !== '') {
+				return color.c;
+			} else {
+				return "rgba(0, 0, 0, 0)";
+			}
 		}
 		if (c.toLowerCase() === "none") {
 			return;
@@ -74,7 +78,11 @@ function XPMColor(char) {
 	this.m = function(m) {
 		"use strict";
 		if (typeof m === "undefined") {
-			return color.m;
+			if (color.m !== '') {
+				return color.m;
+			} else {
+				return "white";
+			}
 		}
 		if (m !== "black" && m !== "white") {
 			throw new EINVAL("Invalid 1-bit monochrome color");
@@ -84,7 +92,11 @@ function XPMColor(char) {
 	this.g = function(g) {
 		"use strict";
 		if (typeof g === "undefined") {
-			return color.g;
+			if (color.g !== '') {
+				return color.g;
+			} else {
+				return "#FFFFFF";
+			}
 		}
 		if (g.charAt(0) !== '#') {
 			throw new EINVAL("Invalid 8-bit grayscale color");
@@ -94,7 +106,11 @@ function XPMColor(char) {
 	this.g4 = function(g4) {
 		"use strict";
 		if (typeof g4 === "undefined") {
-			return color.g4;
+			if (color.g4 !== '') {
+				return color.g4;
+			} else {
+				return "#FFFFFF";
+			}
 		}
 		if (parseInt(g4.substr(1), 16) % 17 !== 0) {
 			throw new EINVAL("Invalid 4-bit grayscale color");
