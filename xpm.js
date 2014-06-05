@@ -20,11 +20,13 @@
  */
 
 function ENOSUPPORT(message) {
+	"use strict";
 	this.name = "Functionality not implemented";
 	this.message = message;
 }
 
 function EINVAL(message) {
+	"use strict";
 	this.name = "Not a valid XPM file";
 	this.message = message;
 }
