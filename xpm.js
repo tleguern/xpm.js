@@ -29,38 +29,22 @@ function EINVAL(message) {
 	this.message = message;
 }
 
-function XPM() {
+function XPM(width, height, ncolors, cpp) {
 	"use strict";
+	this.width = width || 0;
+	this.height = height || 0;
+	this.ncolors = ncolors || 0;
+	this.cpp = cpp || 0;
+	this.xhotspot = 0;
+	this.yhotspot = 0;
+	this.name = "";
+	this.colormap = [];
+	this.monomap = [];
+	this.greymap = [];
+	this.greymap4bits = [];
+	this.canvas = document.createElement('canvas');
+	this.lines = [];
 }
-
-XPM.prototype.width = 0;
-XPM.prototype.height = 0;
-XPM.prototype.ncolors = 0;
-XPM.prototype.cpp = 0;
-XPM.prototype.xhotspot = 0;
-XPM.prototype.yhotspot = 0;
-XPM.prototype.name = "";
-XPM.prototype.colormap = [];
-XPM.prototype.monomap = [];
-XPM.prototype.greymap = [];
-XPM.prototype.greymap4bits = [];
-XPM.prototype.canvas = document.createElement('canvas');
-XPM.prototype.lines = [];
-
-XPM.prototype.raw = function (width, height, ncolors, cpp) {
-	"use strict";
-
-	if (width <= 0 || height <= 0 || ncolors <= 0 || cpp <= 0) {
-		throw new EINVAL("Ridiculous parameters");
-	}
-
-	this.width = parseInt(width, 10);
-	this.height = parseInt(height, 10);
-	this.ncolors = parseInt(ncolors, 10);
-	this.cpp = parseInt(cpp, 10);
-	this.canvas.width = this.width;
-	this.canvas.height = this.height;
-};
 
 XPM.prototype.addColor = function (chars, color) {
 	"use strict";
@@ -139,6 +123,9 @@ XPM.prototype.draw = function (colorscheme) {
 			throw new EINVAL("Invalid colorscheme");
 		}
 	}
+
+	this.canvas.width = this.width;
+	this.canvas.height = this.height;
 
 	ctx = this.canvas.getContext('2d');
 	for (y = 0; y < this.lines.length; y = y + 1) {
