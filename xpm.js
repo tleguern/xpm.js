@@ -63,6 +63,8 @@ function XPMColor(char) {
 		if (typeof c === "undefined") {
 			if (color.c !== '') {
 				return color.c;
+			} else if (color.m !== '') {
+				return color.m;
 			} else {
 				return "rgba(0, 0, 0, 0)";
 			}
@@ -80,6 +82,13 @@ function XPMColor(char) {
 		if (typeof m === "undefined") {
 			if (color.m !== '') {
 				return color.m;
+			} else if (color.c !== '') {
+				if (parseInt(color.c.substring(1), 16)
+				    > 0x7fffff) {
+					return "white";
+				} else {
+					return "black";
+				}
 			} else {
 				return "white";
 			}

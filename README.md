@@ -55,8 +55,11 @@ Such colorscheme might be:
    * 'g4', for 4-bits greyscale;
    * 'm', for monochrome;
 
-For the moment missing colors from a colorscheme are not computed or
-inferred.
+If a color is missing for the 'c' colorscheme but is available in the
+'m' one, it will be used instead of the default value of 'c'.
+
+If a color is missing from the 'm' colorscheme but is available in the
+'c' one, it will be evaluated for its proximity to white or black.
 
 XPMColor object
 ---------------
@@ -142,12 +145,4 @@ Documentation
 
 Some documentation on the XPM file format is available here:
 http://www.xfree86.org/current/xpm.pdf
-
-Available colorschemes are:
-
-   * 'c', for 8-bits color;
-   * 'g', for 8-bits greyscale;
-   * 'g4', for 4-bits greyscale;
-   * 'm', for monochrome;
-
 
