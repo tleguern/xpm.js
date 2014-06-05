@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>patchwork</title>
+</head>
+<body>
+<h1>patchwork.xpm</h1>
+<img id="patchwork" src="patchwork.xpm" alt="A picture of a plaid"/>
+
+<script src="../xpm.js"></script>
+<script src="../xpmnr_x11.js"></script>
+<script>
+function getXPM(path, callback) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.addEventListener("load", transferComplete, false);
+	xmlhttp.addEventListener("error", transferFailed, false);
+
+	function transferComplete(evt) {
+		callback(this.responseText);
+	}
+
+	function transferFailed(evt) {
+		console.warn('Failed to retrieve xpm image');
+	}
+
+	xmlhttp.open("GET", path, true);
+	xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
+	xmlhttp.send();
+}
+</script>
+<script>
+var patchwork = new XPM();
+getXPM('patchwork.xpm', function (t) {
+	patchwork.load(t);
+	var c = patchwork.draw();
+	document.getElementById('patchwork').setAttribute('src', c.toDataURL());
+});
+</script>
+</body>
+</html>
