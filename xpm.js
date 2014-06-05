@@ -37,6 +37,110 @@ function XPMNameResolver(name) {
 	return '#' + Math.floor(Math.random() * 16777215).toString(16);
 }
 
+function XPMColor(char) {
+	"use strict";
+	this.char = char;
+
+	var color = {
+		's': 'None',
+		'c': 'rgba(0, 0, 0, 0)',
+		'm': 'white',
+		'g': '#FFFFFF',
+		'g4': '#FFFFFF'
+	};
+
+	this.s = function(s) {
+		"use strict";
+		if (typeof s === "undefined") {
+			return color.s;
+		}
+		if (color.s.toLowerCase() !== "none") {
+			color.s = s;
+		}
+	}
+	this.c = function(c) {
+		"use strict";
+		if (typeof c === "undefined") {
+			return color.c;
+		}
+		if (c.toLowerCase() === "none") {
+			return;
+		} else if (c[0] !== '#') {
+			color.c = XPMNameResolver(c);
+		} else { 
+			color.c = c;
+		}
+	}
+	this.m = function(m) {
+		"use strict";
+		if (typeof m === "undefined") {
+			return color.m;
+		}
+		if (m !== "black" && m !== "white") {
+			throw new EINVAL("Invalid 1-bit monochrome color");
+		}
+		color.m = m;
+	}
+	this.g = function(g) {
+		"use strict";
+		if (typeof g === "undefined") {
+			return color.g;
+		}
+		if (g.charAt(0) !== '#') {
+			throw new EINVAL("Invalid 8-bit grayscale color");
+		}
+		color.g = g;
+	}
+	this.g4 = function(g4) {
+		"use strict";
+		if (typeof g4 === "undefined") {
+			return color.g4;
+		}
+		if (parseInt(g4.substr(1), 16) % 17 !== 0) {
+			throw new EINVAL("Invalid 4-bit grayscale color");
+		}
+		color.g4 = g4;
+	}
+}
+
+function XPMColorMap() {
+	"use strict";
+	var colors = [];
+
+	this.push = function (xpmcolor) {
+		"use strict";
+		colors.push(xpmcolor);
+	}
+
+	this.find = function (char, colorscheme) {
+		"use strict";
+		colorscheme = colorscheme || 'c';
+
+		for (var i = 0; i < colors.length; i = i + 1) {
+			if (colors[i].char == char) {
+				switch (colorscheme) {
+				case 's':
+					return colors[i].s();
+					break;
+				case 'c':
+					return colors[i].c();
+					break;
+				case 'm':
+					return colors[i].m();
+					break;
+				case 'g':
+					return colors[i].g();
+					break;
+				case 'g4':
+					return colors[i].g4();
+					break;
+				}
+			}
+		}
+		/* Do something here? */
+	}
+}
+
 function XPM(width, height, ncolors, cpp) {
 	"use strict";
 	this.width = width || 0;
@@ -46,48 +150,14 @@ function XPM(width, height, ncolors, cpp) {
 	this.xhotspot = 0;
 	this.yhotspot = 0;
 	this.name = "";
-	this.colormap = [];
-	this.monomap = [];
-	this.greymap = [];
-	this.greymap4bits = [];
-	this.canvas = document.createElement('canvas');
+	this.colors = new XPMColorMap();
 	this.lines = [];
+	this.canvas = document.createElement('canvas');
 }
 
-XPM.prototype.addColor = function (chars, color) {
+XPM.prototype.addColor = function (color) {
 	"use strict";
-	var c, default_color = "rgba(0, 0, 0, 0)";
-
-	if (color.c) {
-		if (color.c.toLowerCase() === "none") {
-			this.colormap[chars] = default_color;
-		} else if (color.c[0] !== '#') {
-			c = XPMNameResolver(color.c);
-			this.colormap[chars] = c === null ? default_color : c;
-		} else {
-			this.colormap[chars] = color.c;
-		}
-	}
-	if (color.m) {
-		if (color.m.toLowerCase() !== "black"
-		    && color.m.toLowerCase() !== "white") {
-			throw new EINVAL("Invalid 1-bit monochrome color");
-		}
-		this.monomap[chars] = color.m;
-	}
-	if (color.g4) {
-		if (color.g4.charAt(0) !== '#'
-		    || parseInt(color.g4.substr(1), 16) % 17 !== 0) {
-			throw new EINVAL("Invalid 4-bit grayscale color");
-		}
-		this.greymap4bits[chars] = color.g4;
-	}
-	if (color.g) {
-		if (color.g.charAt(0) !== '#') {
-			throw new EINVAL("Invalid 8-bit grayscale color");
-		}
-		this.greymap[chars] = color.g;
-	}
+	this.colors.push(color);
 };
 
 XPM.prototype.addLine = function (line) {
@@ -104,33 +174,7 @@ XPM.prototype.addLine = function (line) {
 
 XPM.prototype.draw = function (colorscheme) {
 	"use strict";
-	var ss, color, colormap, y, x, ctx;
-
-	if (typeof(colorscheme) === "undefined") {
-		if (Object.keys(this.colormap).length !== 0) {
-			colormap = this.colormap;
-		} else if (Object.keys(this.monomap).length !== 0) {
-			colormap = this.monomap;
-		} else if (Object.keys(this.greymap).length !== 0) {
-			colormap = this.greymap;
-		} else if (Object.keys(this.greymap4bits).length !== 0) {
-			colormap = this.greymap4bits;
-		} else {
-			throw new EINVAL("No colorscheme available");
-		}
-	} else {
-		if (colorscheme.toLowerCase() == "m") {
-			colormap = this.monomap;
-		} else if (colorscheme.toLowerCase() == "g") {
-			colormap = this.greymap;
-		} else if (colorscheme.toLowerCase() == "g4") {
-			colormap = this.greymap4bits;
-		} else if (colorscheme.toLowerCase() == "c") {
-			colormap = this.colormap;
-		} else {
-			throw new EINVAL("Invalid colorscheme");
-		}
-	}
+	var ss, color, y, x, ctx;
 
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
@@ -140,7 +184,7 @@ XPM.prototype.draw = function (colorscheme) {
 		for (x = 1; x < this.lines[y].length; x = x + 1) {
 			ss = this.lines[y].substring((x - 1) * this.cpp,
 			    x * this.cpp);
-			color = colormap[ss];
+			color = this.colors.find(ss, colorscheme);
 			ctx.fillStyle = color;
 			ctx.fillRect(x, y, 1, 1);
 		}
@@ -237,11 +281,7 @@ XPM.prototype.load = function (buffer) {
 			section = 3;
 			break;
 		case 3:	/* <Colors> */
-			/*
-			 * TODO: - Parse color value;
-			 */
-			var key, val, chars, cit;
-			var map = [];
+			var key, val, chars, cit, color;
 
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
@@ -250,24 +290,26 @@ XPM.prototype.load = function (buffer) {
 			line = line.substr(this.cpp);
 			line = line.replace(/\s+/g, ' ').trim();
 
+			color = new XPMColor(chars);
+
 			cit = Iterator(line.split(' '));
 			for (key in cit) {
 				val = cit.next();
 				if (key[1] == 'c') {
-					map.c = val[1];
+					color.c(val[1]);
 				} else if (key[1] === 'm') {
-					map.m = val[1];
+					color.m(val[1]);
 				} else if (key[1] === 's') {
-					map.s = val[1];
+					color.s(val[1]);
 				} else if (key[1] === 'g') {
-					map.g = val[1];
+					color.g(val[1]);
 				} else if (key[1] === 'g4') {
-					map.g4 = val[1];
+					color.g4(val[1]);
 				} else {
 					throw EINVAL("Color key " + val[1]);
 				}
 			}
-			this.addColor(chars, map);
+			this.addColor(color);
 
 			ncolors = ncolors + 1;
 			if (this.ncolors === ncolors) {
