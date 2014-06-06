@@ -243,6 +243,7 @@ XPM.prototype.draw = function (colorscheme) {
 XPM.prototype.load = function (buffer) {
 	"use strict";
 	var lastPos, section, offset, line, pos, ncolors, lines;
+	var a = [];
 
 	lastPos = section = offset = ncolors = lines = 0;
 	do {
@@ -287,8 +288,6 @@ XPM.prototype.load = function (buffer) {
 			section = 2;
 			break;
 		case 2:	/* <Values> */
-			var a;
-
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
 			line = line.replace(/\s+/g, ' ').trim();
@@ -328,7 +327,7 @@ XPM.prototype.load = function (buffer) {
 			section = 3;
 			break;
 		case 3:	/* <Colors> */
-			var key, val, chars, cit, color;
+			var chars, color;
 
 			line = line.substr(line.indexOf('"') + 1,
 			    line.lastIndexOf('"') - 1);
@@ -339,23 +338,23 @@ XPM.prototype.load = function (buffer) {
 
 			color = new XPMColor(chars);
 
-			cit = Iterator(line.split(' '));
-			for (key in cit) {
-				val = cit.next();
-				if (key[1] == 'c') {
-					color.c(val[1]);
-				} else if (key[1] === 'm') {
-					color.m(val[1]);
-				} else if (key[1] === 's') {
-					color.s(val[1]);
-				} else if (key[1] === 'g') {
-					color.g(val[1]);
-				} else if (key[1] === 'g4') {
-					color.g4(val[1]);
+			a = line.split(' ');
+			for (var i = 0; i < a.length; i = i + 2) {
+				if (a[i] == 'c') {
+					color.c(a[i + 1]);
+				} else if (a[i] === 'm') {
+					color.m(a[i + 1]);
+				} else if (a[i] === 's') {
+					color.s(a[i + 1]);
+				} else if (a[i] === 'g') {
+					color.g(a[i + 1]);
+				} else if (a[i] === 'g4') {
+					color.g4(a[i + 1]);
 				} else {
-					throw EINVAL("Color key " + val[1]);
+					throw EINVAL("Color key " + a[i + 1]);
 				}
 			}
+
 			this.addColor(color);
 
 			ncolors = ncolors + 1;
