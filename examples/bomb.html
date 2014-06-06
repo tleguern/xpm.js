@@ -11,10 +11,10 @@
 <h2>4 bits grey</h2>
 <img id="bombg4" src="bomb.xpm" alt="A picture of a bomb in 16 greys"/>
 <h2>8 bits grey</h2>
-<img id="bombg" src="bomb.xpm" alt="A picture of a bomb in full 256 colors"/>
+<img id="bombg" src="bomb.xpm"
+    alt="A picture of a bomb in full 256 shade of greys"/>
 <h2>8 bits color</h2>
-<img id="bombc" src="bomb.xpm"
-    alt="A picture of a bomb in full 256 shade of grey"/>
+<img id="bombc" src="bomb.xpm" alt="A picture of a bomb in full 256 colors"/>
 <h2>XPM file</h2>
 <pre id="xpmsource">
 /* XPM */
@@ -70,11 +70,7 @@ static char * icl8_11432_xpm[] = {
 <script>
 var c, m, g, g4;
 var xpm = new XPM();
-try {
-	xpm.load(document.getElementById('xpmsource').innerHTML);
-} catch (e) {
-	console.warn(e.name + ' - ' + e.message);
-}
+xpm.load(document.getElementById('xpmsource').innerHTML);
 c = xpm.draw('c');
 document.getElementById('bombc').setAttribute('src', c.toDataURL());
 m = xpm.draw('m');
