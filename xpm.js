@@ -83,12 +83,7 @@ function XPMColor(char) {
 			if (color.m !== '') {
 				return color.m;
 			} else if (color.c !== '') {
-				if (parseInt(color.c.substring(1), 16)
-				    > 0x7fffff) {
-					return "white";
-				} else {
-					return "black";
-				}
+				return colorToMono(color.c);
 			} else {
 				return "white";
 			}
@@ -103,6 +98,11 @@ function XPMColor(char) {
 		if (typeof g === "undefined") {
 			if (color.g !== '') {
 				return color.g;
+			} else if (color.c !== '') {
+				color.g = colorToGrey(color.c);
+				return color.g;
+			} else if (color.m !== '') {
+				return color.m;
 			} else {
 				return "#FFFFFF";
 			}
@@ -125,6 +125,28 @@ function XPMColor(char) {
 			throw new EINVAL("Invalid 4-bit grayscale color");
 		}
 		color.g4 = g4;
+	}
+
+	function colorToGrey(color) {
+		var r, g, b, c, grey;
+
+		c = parseInt(color.substring(1), 16);
+		r = (c >> 16);
+		g = (c >> 8 & 255);
+		b = (c & 255);
+		grey = 0.299 * r + 0.587 * g + 0.114 * b;
+		grey = Math.floor(grey).toString(16);
+		return '#' + grey + grey + grey;
+	}
+	function colorToMono(color) {
+		var c;
+
+		c = parseInt(color.substring(1), 16);
+		if (c > 0x7fffff) {
+			return "white";
+		} else {
+			return "black";
+		}
 	}
 }
 

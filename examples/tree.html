@@ -6,6 +6,11 @@
 </head>
 <body>
 <h1>tree.xpm</h1>
+<h2>1 bits monochrome - computed</h2>
+<img id="treem" src="tree.xpm" alt="A picture of a tree"/>
+<h2>8 bits grey - computed</h2>
+<img id="treeg" src="tree.xpm" alt="A picture of a tree"/>
+<h2>8 bits color - regular color</h2>
 <img id="tree" src="tree.xpm" alt="A picture of a tree"/>
 
 <script src="../xpm.js"></script>
@@ -31,9 +36,15 @@ function getXPM(path, callback) {
 <script>
 var tree= new XPM();
 getXPM('tree.xpm', function (t) {
+	var c, g, m;
+
 	tree.load(t);
-	var c = tree.draw();
+	c = tree.draw();
 	document.getElementById('tree').setAttribute('src', c.toDataURL());
+	g = tree.draw('g');
+	document.getElementById('treeg').setAttribute('src', g.toDataURL());
+	m = tree.draw('m');
+	document.getElementById('treem').setAttribute('src', m.toDataURL());
 });
 </script>
 </body>

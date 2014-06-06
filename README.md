@@ -22,7 +22,7 @@ Construct a XPM object from the given buffer.
 XPM.addColor(color)
 -------------------
 
-Add the given XPMColor object `color` to color list.
+Add the given XPMColor object `color` to the color list.
 
 Example:
 
@@ -50,16 +50,22 @@ Draw in a canvas element using colors from the given colorscheme.
 
 Such colorscheme might be:
 
-   * 'c', for 8-bits color;
-   * 'g', for 8-bits greyscale;
-   * 'g4', for 4-bits greyscale;
-   * 'm', for monochrome;
+   * 'c', for 8-bit color;
+   * 'g', for 8-bit greyscale;
+   * 'g4', for 4-bit greyscale;
+   * 'm', for 1-bit monochrome;
 
-If a color is missing for the 'c' colorscheme but is available in the
+Missing colors in the colorschemes 'c', 'm' and 'g' can be computed at
+drawing time, following these rules:
+
+- If a color is missing for the 'c' colorscheme but is available in the
 'm' one, it will be used instead of the default value of 'c'.
-
-If a color is missing from the 'm' colorscheme but is available in the
+- If a color is missing from the 'm' colorscheme but is available in the
 'c' one, it will be evaluated for its proximity to white or black.
+- If a color is missing from the 'g' colorscheme but is available in the
+'c' one, it will be calculated blabla.  If a color is missing from the
+'g' and 'c' colorscheme but is available in the 'm' one, it will be used
+instead of the default value of 'g';
 
 XPMColor object
 ---------------
