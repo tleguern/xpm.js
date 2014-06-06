@@ -15,42 +15,74 @@
 <h2>8 bits color</h2>
 <img id="bombc" src="bomb.xpm"
     alt="A picture of a bomb in full 256 shade of grey"/>
+<h2>XPM file</h2>
+<pre id="xpmsource">
+/* XPM */
+static char * icl8_11432_xpm[] = {
+/* width height ncolors chars_per_pixel */
+"32 32 9 1",
+/* colors */
+"  s None c None    m white g4 #FFFFFF g #FFFFFF",
+"o        c #999999 m white g4 #999999 g #999999",
+"O        c #000000 m black g4 #000000 g #000000",
+"+        c #333333 m black g4 #333333 g #333333",
+"@        c #111111 m black g4 #111111 g #111111",
+"#        c #FF6666 m black g4 #888888 g #888888",
+"$        c #FEFE00 m black g4 #EEEEEE g #FEFEFE",
+"%        c #DDDDDD m white g4 #DDDDDD g #DDDDDD",
+"*        c #BBBBBB m white g4 #BBBBBB g #BBBBBB",
+/* pixels */
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"                                ",
+"           oOoOo                ",
+"          O     Oo              ",
+"         o        O             ",
+"         O        o             ",
+"       +++++       O            ",
+"       +@@@+       o            ",
+"      +@@O@@+       O           ",
+"    ++@OOO@O@++     o  #       $",
+"   +@@OOOOOOO@@+    O      $  # ",
+"  +@OOOOOOOOOOO@+    o  $       ",
+"  +@OOOOOO%*oOO@+    O   #  $   ",
+" +@OOOOOOOO%*oOO@+    o         ",
+" +@OOOOOOOOOOOOO@+     OoO # $ #",
+" +@OOOOOOOOO%*oO@+              ",
+" +@OOOOOOOOO%*oO@+      $   $   ",
+" +@OOOOOOOOO%*oO@+        #  #  ",
+" +@OOOOOOOO%*oOO@+     #        ",
+" +@OOOOOOOO%*oOO@+    $   $    $",
+"  +@OOOOOO%*oOO@+               ",
+"  +@OOOOOOOOOOO@+         #     ",
+"   +@@OOOOOOO@@+                ",
+"    ++@@@@@@@++                 ",
+"      +++++++                   ",
+"                                "};
+</pre>
 
 <script src="../xpm.js"></script>
 <script>
-function getXPM(path, callback) {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.addEventListener("load", transferComplete, false);
-	xmlhttp.addEventListener("error", transferFailed, false);
-
-	function transferComplete(evt) {
-		callback(this.responseText);
-	}
-
-	function transferFailed(evt) {
-		console.warn('Failed to retrieve xpm image');
-	}
-
-	xmlhttp.open("GET", path, true);
-	xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
-	xmlhttp.send();
+var c, m, g, g4;
+var xpm = new XPM();
+try {
+	xpm.load(document.getElementById('xpmsource').innerHTML);
+} catch (e) {
+	console.warn(e.name + ' - ' + e.message);
 }
-</script>
-<script>
-var bomb = new XPM();
-getXPM('bomb.xpm', function (t) {
-	var c, m, g, g4;
-
-	bomb.load(t);
-	c = bomb.draw('c');
-	document.getElementById('bombc').setAttribute('src', c.toDataURL());
-	m = bomb.draw('m');
-	document.getElementById('bombm').setAttribute('src', m.toDataURL());
-	g = bomb.draw('g');
-	document.getElementById('bombg').setAttribute('src', g.toDataURL());
-	g4 = bomb.draw('g4');
-	document.getElementById('bombg4').setAttribute('src', g4.toDataURL());
-});
+c = xpm.draw('c');
+document.getElementById('bombc').setAttribute('src', c.toDataURL());
+m = xpm.draw('m');
+document.getElementById('bombm').setAttribute('src', m.toDataURL());
+g = xpm.draw('g');
+document.getElementById('bombg').setAttribute('src', g.toDataURL());
+g4 = xpm.draw('g4');
+document.getElementById('bombg4').setAttribute('src', g4.toDataURL());
 </script>
 </body>
 </html>
