@@ -196,6 +196,7 @@ function XPM(width, height, ncolors, cpp) {
 	this.cpp = cpp || 0;
 	this.xhotspot = 0;
 	this.yhotspot = 0;
+	this.extension = false;
 	this.name = "";
 	this.colors = new XPMColorMap();
 	this.lines = [];
@@ -317,13 +318,19 @@ XPM.prototype.load = function (buffer) {
 			this.canvas.width = this.width;
 			this.canvas.height = this.height;
 
-			if (a[4] && a[5]) {
+			if (a[4] && a[5] && !a[6]) {
 				this.xhotspot =  parseInt(a[4], 10);
 				this.yhotspot =  parseInt(a[5], 10);
-			} else if (a[4] && a[4] === "XPMEXT") {
-				throw new ENOSUPPORT("XPMEXT");
+			} else if (a[4] && !a[5] && !a[6] && a[4] === "XPMEXT"){
+				this.extension = true;
+			} else if (a[4] && a[5]&& a[6] && a[6] === "XPMEXT") {
+				this.xhotspot =  parseInt(a[4], 10);
+				this.yhotspot =  parseInt(a[5], 10);
+				this.extension = true;
+			} else {
+				throw new EINVAL("Garbage at end of <values>");
 			}
-			
+
 			section = 3;
 			break;
 		case 3:	/* <Colors> */
@@ -370,11 +377,17 @@ XPM.prototype.load = function (buffer) {
 
 			lines = lines + 1;
 			if (this.height === lines) {
-				section = 5;
+				if (this.extension === true)
+					section = 5;
+				else
+					section = -1;
 			}
 			break;
 		case 5: /* <Extensions> */
 			/* TODO */
+			line = line.substr(line.indexOf('"') + 1,
+			    line.lastIndexOf('"') - 1);
+			console.log(line);
 			section = -1;
 			break;
 		case -1:
