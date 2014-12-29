@@ -211,9 +211,9 @@ XPM.prototype.addLine = function (line) {
 	"use strict";
 
 	if (line.length / this.cpp > this.width) {
-		throw EINVAL("Line too long");
+		throw new EINVAL("Line too long");
 	} else if (line.length / this.cpp < this.width) {
-		throw EINVAL("Line too short");
+		throw new EINVAL("Line too short");
 	}
 
 	this.lines.push(line);
@@ -321,7 +321,7 @@ XPM.prototype.load = function (buffer) {
 				this.xhotspot =  parseInt(a[4], 10);
 				this.yhotspot =  parseInt(a[5], 10);
 			} else if (a[4] && a[4] === "XPMEXT") {
-				throw ENOSUPPORT("XPMEXT");
+				throw new ENOSUPPORT("XPMEXT");
 			}
 			
 			section = 3;
@@ -351,7 +351,7 @@ XPM.prototype.load = function (buffer) {
 				} else if (a[i] === 'g4') {
 					color.g4(a[i + 1]);
 				} else {
-					throw EINVAL("Color key " + a[i + 1]);
+					throw new EINVAL("Color key " + a[i+1]);
 				}
 			}
 
@@ -380,7 +380,7 @@ XPM.prototype.load = function (buffer) {
 		case -1:
 			return;
 		default:
-			throw EINVAL("Extra garbage at end of file");
+			throw new EINVAL("Extra garbage at end of file");
 		}
 	} while (pos !== buffer.length);
 };
