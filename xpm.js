@@ -318,16 +318,16 @@ XPM.prototype.load = function (buffer) {
 			this.canvas.width = this.width;
 			this.canvas.height = this.height;
 
-			if (a[4] && a[5] && !a[6]) {
-				this.xhotspot =  parseInt(a[4], 10);
-				this.yhotspot =  parseInt(a[5], 10);
-			} else if (a[4] && !a[5] && !a[6] && a[4] === "XPMEXT"){
+			if (a.length == 6) {
+				this.xhotspot = parseInt(a[4], 10);
+				this.yhotspot = parseInt(a[5], 10);
+			} else if (a.length == 5 && a[4] === "XPMEXT"){
 				this.extension = true;
-			} else if (a[4] && a[5]&& a[6] && a[6] === "XPMEXT") {
-				this.xhotspot =  parseInt(a[4], 10);
-				this.yhotspot =  parseInt(a[5], 10);
+			} else if (a.length == 7 && a[6] === "XPMEXT") {
+				this.xhotspot = parseInt(a[4], 10);
+				this.yhotspot = parseInt(a[5], 10);
 				this.extension = true;
-			} else {
+			} else if (a.length != 4) {
 				throw new EINVAL("Garbage at end of <values>");
 			}
 
